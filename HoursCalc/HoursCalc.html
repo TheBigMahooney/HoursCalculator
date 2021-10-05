@@ -1,0 +1,106 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="HoursCalcCSS.css" >
+
+    </head>
+
+    <body>
+        <div id="TitleArea">
+            <div id="HeadersArea">
+                <h1> HOURS CALCULATOR</h1>
+                <h3>Hours to add (HH:MM) format</h3>
+                <h3>Press enter to update</h3>
+            </div>
+
+            <div id="ResetButton">
+                RESET
+            </div>
+            
+        </div>
+        
+        <input id="TimeEntry" placeholder="FORMAT [HH:MM]">
+
+        <p id=OutputArea style="border: 15%;"></p>
+
+        <p id="AuditArea"></p>
+
+    </body>
+
+    <script>
+        var auditCounter = 0
+        var inputData
+
+        var textEntry = document.getElementById("TimeEntry");
+
+        var outputArea = document.getElementById("OutputArea");
+
+        var auditArea = document.getElementById("AuditArea");
+
+        var inputDataTotal = "00:00"; 
+        outputArea.innerText = inputDataTotal;
+
+
+        textEntry.addEventListener("input", function(){
+            // currently a string 
+            inputData = textEntry.value;
+        })
+
+        textEntry.addEventListener("keypress", function(e){
+            if(e.key == "Enter"){
+                let splitDataInput = inputData.split(":");
+                
+                let hoursInput = parseInt(splitDataInput[0]);
+                let minuteInput = parseInt(splitDataInput[1]);
+                
+                if(isNaN(minuteInput)){
+                    minuteInput = 0;
+                }
+
+                let splitDataOutput = outputArea.innerText.split(":");
+                
+                let hoursOutput = parseInt(splitDataOutput[0]) + hoursInput
+                let minuteOutput = parseInt(splitDataOutput[1]) + minuteInput
+
+
+                while(true){
+                    if(minuteOutput >= 60){
+                        hoursOutput += 1;
+                        minuteOutput -= 60;
+                    }
+                    else{
+                        break;
+                    }
+                }
+
+                // Section to show total
+                let minutesString;
+                if(minuteOutput < 10){
+                    minutesString = "0" + String(minuteOutput);
+                }
+                else{
+                    minutesString = String(minuteOutput)
+                }
+                outputArea.innerText = String(hoursOutput) + ":" + minutesString;
+
+
+
+
+                // section to show audit trail
+                auditCounter += 1;
+                let newAuditItem = document.createElement("P");
+                newAuditItem.id = "AuditEntry-"+String(auditCounter)
+                newAuditItem.innerText = "Entry Number: (" + String(auditCounter) + ") = " + inputData
+                document.body.appendChild(newAuditItem);
+
+                textEntry.value = "";
+                
+            }
+        })
+
+        var resetButton = document.getElementById("ResetButton");
+
+        resetButton.addEventListener("click", function(){location.reload()})
+
+
+    </script>
+</html>
